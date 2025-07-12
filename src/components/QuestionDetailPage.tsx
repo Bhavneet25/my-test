@@ -224,7 +224,7 @@ const QuestionDetailPage: React.FC<QuestionDetailPageProps> = ({ question, onBac
         </div>
 
         {/* AI Answer Button */}
-        {!hasAIAnswer && (
+        {!hasAIAnswer && import.meta.env.VITE_GEMINI_API_KEY && (
           <div className="mb-6 sm:mb-8">
             <button
               onClick={handleGenerateAIAnswer}

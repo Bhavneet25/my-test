@@ -46,7 +46,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [user]);
 
   const fetchUserVotes = async () => {
-    if (!user) return;
+    if (!user || !supabase) return;
 
     try {
       const { data, error } = await supabase
@@ -71,6 +71,11 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const refreshQuestions = async () => {
+    if (!supabase) {
+      console.error('Supabase not configured');
+      return;
+    }
+
     try {
       setIsLoading(true);
       
@@ -158,7 +163,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addQuestion = async (questionData: Omit<Question, 'id' | 'createdAt' | 'updatedAt' | 'votes' | 'views' | 'answers' | 'author'>) => {
-    if (!user) throw new Error('User not authenticated');
+    if (!user || !supabase) throw new Error('User not authenticated or database not configured');
 
     try {
       const { data, error } = await supabase
@@ -182,7 +187,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addAnswer = async (answerData: Omit<Answer, 'id' | 'createdAt' | 'updatedAt' | 'votes' | 'isAccepted' | 'author'>) => {
-    if (!user) throw new Error('User not authenticated');
+    if (!user || !supabase) throw new Error('User not authenticated or database not configured');
 
     try {
       const { data, error } = await supabase
@@ -208,6 +213,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const addAIAnswer = async (questionId: string, questionTitle: string, questionDescription: string) => {
+    if (!supabase) throw new Error('Database not configured');
+
     try {
       const aiContent = await generateAIAnswer(questionTitle, questionDescription);
       
@@ -232,7 +239,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const voteOnQuestion = async (questionId: string, value: 1 | -1) => {
-    if (!user) throw new Error('User not authenticated');
+    if (!user || !supabase) throw new Error('User not authenticated or database not configured');
 
     try {
       const existingVote = votes.find(v => 
@@ -283,7 +290,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const voteOnAnswer = async (answerId: string, value: 1 | -1) => {
-    if (!user) throw new Error('User not authenticated');
+    if (!user || !supabase) throw new Error('User not authenticated or database not configured');
 
     try {
       const existingVote = votes.find(v => 
@@ -334,7 +341,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const acceptAnswer = async (questionId: string, answerId: string) => {
-    if (!user) throw new Error('User not authenticated');
+    if (!user || !supabase) throw new Error('User not authenticated or database not configured');
 
     try {
       // Update question with accepted answer
@@ -357,6 +364,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const incrementQuestionViews = async (questionId: string) => {
+    if (!supabase) return;
+
     try {
       await supabase.rpc('increment_question_views', {
         question_id: questionId

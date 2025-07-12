@@ -258,6 +258,12 @@ const HomePage: React.FC<HomePageProps> = ({ onQuestionClick }) => {
                       <div className="w-2 h-2 bg-pink-500 rounded-full"></div>
                       <span>Build your reputation</span>
                     </div>
+                    {import.meta.env.VITE_GEMINI_API_KEY && (
+                      <div className="flex items-center justify-center space-x-2">
+                        <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                        <span>Get AI-powered answers</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

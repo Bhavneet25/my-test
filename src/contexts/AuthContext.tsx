@@ -55,6 +55,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const fetchUserProfile = async (userId: string) => {
+    if (!supabase) {
+      console.error('Supabase not configured');
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('users')
